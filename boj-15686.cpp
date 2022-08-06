@@ -21,6 +21,38 @@ bool comb[15];
 queue<info> q;
 int mn = 0x5F5F5F5F;
 
+void bfs(){
+    
+    int cur_cnt = 0;
+    int cur_dist = 0;
+    bool flag = false;
+
+    while (!q.empty()){
+        info cur = q.front(); q.pop();
+        for (int i = 0; i < 4; ++i){
+            int n_x = cur.first.first + dx[i];
+            int n_y = cur.first.second + dy[i];
+
+            if (n_x < 0 || n_x >= n || n_y < 0 || n_y >= n) continue;
+            if (dist[n_x][n_y] != 0) continue;
+            dist[n_x][n_y] = cur.second+1;
+
+            if (board[n_x][n_y] == 1){
+                cur_cnt++;
+                cur_dist += dist[n_x][n_y];
+            }
+            if (cur_cnt == h_cnt){
+                mn = min(mn, cur_dist);
+                flag = true;
+                break;
+    
+            }
+            q.push({{n_x, n_y}, dist[n_x][n_y]});
+        }
+        if (flag == true) break;
+    }
+}
+
 
 int main(){
     cin >> n >> m;
@@ -31,7 +63,7 @@ int main(){
                 chicken[c_cnt] = {i, j};
                 c_cnt++;
             }
-            else if (board[i][j] == 1) h_cnt++;
+            if (board[i][j] == 1) h_cnt++;
         }
     }
 
@@ -45,36 +77,8 @@ int main(){
         for (int i = 0 ; i < n; ++i)
             fill(dist[i], dist[i]+n, 0);
 
-        int cur_cnt = 0;
-        int cur_dist = 0;
-        bool flag = false;
-
-        while (!q.empty()){
-            info cur = q.front(); q.pop();
-            for (int i = 0; i < 4; ++i){
-                int n_x = cur.first.first + dx[i];
-                int n_y = cur.first.second + dy[i];
-
-                if (n_x < 0 || n_x >= n || n_y < 0 || n_y >= n) continue;
-                if (dist[n_x][n_y] != 0) continue;
-                dist[n_x][n_y] = cur.second+1;
-                
-                if (board[n_x][n_y] == 1){
-                    cur_cnt++;
-                    cur_dist += dist[n_x][n_y];
-                }
-                if (cur_cnt == h_cnt){
-                    mn = min(mn, cur_dist);
-                    flag = true;
-                    break;
+        bfs();  
         
-                }
-                q.push({{n_x, n_y}, dist[n_x][n_y]});
-            }
-            if (flag == true) break;
-        }
-        
-       
     }while(prev_permutation(comb, comb+c_cnt));
     cout << mn;
 }

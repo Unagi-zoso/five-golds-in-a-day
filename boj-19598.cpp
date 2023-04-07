@@ -40,7 +40,6 @@ int main() {
 
     ui ans = 1;
     for (auto i : v) {
-        cout << i.fi
         while (!min_end_time_heap.empty() && min_end_time_heap.top().END_TIME <= i.BEGIN_TIME)
             min_end_time_heap.pop();
         min_end_time_heap.push(i);

@@ -1,31 +1,30 @@
-import sys  # lcs 사용 0번대 인덱스에 0패딩을 줘서 인덱스 계산이 어려워요
+import sys  # lcs 사용, 0번대 인덱스에 0패딩을 줘서 인덱스 계산이 어려워요
         
-def search_and_destroy(x, y, i, j, s, l, r):
-    global lcs
+def find_lcs_and_make_new_word(x, y, s, l_t_s, r_t_s): # x, y 최장 공통 부분수열을 찾기 위한 시작 좌표
+    global lcs                                       # s는 새로 만들어질 단어
 
-    if lcs[x][y] == 0: 
-        s = rhs[0:x] + s
-        s = lhs[0:y] + s
+    if lcs[y][x] == 0: 
+        s = rhs[0:y] + s
+        s = lhs[0:x] + s
         return s
 
-    if lcs[x-1][y] == lcs[x][y]:
+    if lcs[y][x-1] == lcs[y][x]:
         
-        l = rhs[x-1] + l
-        return search_and_destroy(x-1, y, i, j, s, l, r)
-    elif lcs[x][y-1] == lcs[x][y]:
+        l_t_s = lhs[x-1] + l_t_s
+        return find_lcs_and_make_new_word(x-1, y, s, l_t_s, r_t_s)
+    elif lcs[y-1][x] == lcs[y][x]:
         
-        r = lhs[y-1] + r
-        return search_and_destroy(x, y-1, i, j, s, l, r)
+        r_t_s = rhs[y-1] + r_t_s
+        return find_lcs_and_make_new_word(x, y-1, s, l_t_s, r_t_s)
     else:
         
-        s = l + s
-        s = r + s
-        s = rhs[x-1] + s     
-        return search_and_destroy(x-1, y-1, x, y, s, "", "")
+        s = r_t_s + s
+        s = l_t_s + s
+        s = lhs[x-1] + s     
+        return find_lcs_and_make_new_word(x-1, y-1, s, "", "")
 
 while True:
     lcs = [[0 for _ in range(105)] for _ in range(105)]
-    alpha = [0 for _ in range(35)]
 
     try:
         lhs, rhs  = sys.stdin.readline().split()
@@ -40,6 +39,5 @@ while True:
             else:
                 lcs[i][j] = max(lcs[i-1][j], lcs[i][j-1])
     
-    ans = ""
-    ans = search_and_destroy(len(rhs), len(lhs), len(rhs), len(lhs), ans, "", "")
+    ans = find_lcs_and_make_new_word(len(lhs), len(rhs), "", "", "")
     print(ans)

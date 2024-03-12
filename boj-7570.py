@@ -5,7 +5,7 @@ for i in range(n):
     lookup[m[i]] = i
 
 cnt = 1
-mx_v = 0
+mx_v = 1
 for i in range(1, n):
     if lookup[i] < lookup[i+1]:
         cnt += 1

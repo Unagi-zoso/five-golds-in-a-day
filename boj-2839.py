@@ -9,4 +9,4 @@ dp[5] = 1
 for i in range(6, 5005):
     dp[i] = min(dp[i], dp[i-5] + 1, dp[i-3] + 1)
 
-print(dp[n])
+print(dp[n] if dp[n] < INF else -1)

@@ -41,3 +41,6 @@ def solution(dice):
     for i in ans:
         answer.append(i+1)    
     return answer
+
+# 보이는 예시를 그대로 따를 필요 없다.
+# 시간 복잡도 정확히 계산해라

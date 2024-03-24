@@ -1,23 +1,21 @@
+def solution(numbers):
+    def rec(idx, s):
+        if answer[idx] == 0 or (rt_idx := len(s)//2) == 0:
+            return
+        
+        if s[rt_idx] == '0' and ('1' in s):
+            answer[idx] = 0
+        else:
+            rec(idx, s[:rt_idx]), rec(idx, s[rt_idx+1:])
+            
+    answer = [1 for _ in range(len(numbers))]
+    for idx, n in enumerate(numbers):
+        t_b = bin(n)[2:]
+        l_b, i = len(t_b), 1
+        while l_b >= i:
+            i *= 2
+        t_b = t_b.rjust(i-1, '0')
+        rec(idx, t_b)
+    return answer
 
-from itertools import product
 
-def solution(users, emoticons):
-    discount_rates = [10, 20, 30, 40]
-    ans = (-1, -1)
-    rate_li = list(product(discount_rates, repeat=len(emoticons)))
-
-    for rates in rate_li:
-        num_sub, amount = 0,0
-        for agree_rate, over_critic in users:
-            c_sum = 0
-            for emo_id in range(len(emoticons)):
-                if agree_rate > rates[emo_id]:
-                    continue
-                c_sum += emoticons[emo_id] - int(emoticons[emo_id] / 100) * rates[emo_id]
-            if c_sum >= over_critic:
-                
-                num_sub += 1
-            elif c_sum < over_critic:
-                amount += c_sum
-        ans = max(ans, (num_sub, amount), key=lambda x: (x[0], x[1]))
-    return ans

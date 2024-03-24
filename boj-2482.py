@@ -22,11 +22,11 @@ def sol(ff, ck, st):
     global n, k, visit, nums, ans, x    
     if ck == k:
         ans+=1
-        #print(st)
+        print(st)
         return
     nei = []
     x += 1
-    print(x)
+    #print(x)
     for i in range(ff, n):
         sel = nums[i]
         if visit[sel]: continue

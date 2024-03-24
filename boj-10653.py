@@ -18,6 +18,7 @@ def rec(dest, cntIgnored):
         return dp[dest][cntIgnored]
     for i in range(cntIgnored+1):
         if dest - 1 - i < 1: break
+        print(dest, cntIgnored, dest - 1 - i, cntIgnored - i)
         dp[dest][cntIgnored] = min(dp[dest][cntIgnored], rec(dest - 1 - i, cntIgnored - i) + dist[dest - 1 - i][dest])
     return dp[dest][cntIgnored]
 

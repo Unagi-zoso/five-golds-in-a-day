@@ -17,6 +17,7 @@ for k in range(1, n+1):
         for j in range(1, n+1):
             if board[i][j][0] > board[i][k][0] + board[k][j][0]:
                 board[i][j] = (board[i][k][0] + board[k][j][0], board[i][k][1] + board[k][j][1] - 1, board[i][k][2][:-1] + board[k][j][2])
+                if board[i][j][0] == 7: print("**** ", k, i, j)
 
 for i in range(1, n+1):
     for j in range(1, n+1):

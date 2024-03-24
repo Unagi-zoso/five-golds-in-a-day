@@ -1,42 +1,38 @@
-M = 28
+# 지난 트래픽 조사해서 이번꺼 대응
+# 작년 9/15 분석. 초당 최대 처리량은 요청 응답 완료 여부 관계없이 임의 시간부터 1초(=1,000밀리초)간 처리하는 요청의 최대 개수를 의미한다.
 
+# 입력 형식
+# lines 사이즈 1 <= n <= 2,000 개의 로그 문자열
+# 각 로그마다 응답완료시간 s와 처리시간 T가 공백 구분
+# 처리 시작 T는 0.1s 같이 최대소수점 셋째자리까지 기록하며 뒤에는 초 단위 의미 s로 끝난다.
+# 로그 문자열 2016-09-15 03:10:33.020 0.011s은 "2016년 9월 15일 오전 3시 10분 33.010초"부터 "2016년 9월 15일 오전 3시 10분 33.020초"까지 "0.011초" 동안 처리된 요청을 의미한다. (처리시간은 시작시간과 끝시간을 포함)
+# 서버에 타임아웃 3초. 처리시간은 0.001 <= T <= 3.000이다.
+# lines 배열은 응답완료시간 s기준 오름차순 정렬되어있다.
 
-def sepa_units(str):
-    return list(map(int, str.split('.')))
+# 출력
+# 로그 데이터 lines 에 대해 초당 최대 처리량 리턴
 
+# 로그 데이터들을 일자와 시간순의 데이터로 만들고 정렬. 년월은 생략해도괜찮. 일도 생략하자. 정렬하였으니 bisect로 범위탐색 가능해 이걸로 개수 파악
+# 시작 시간 다 구하고 각 시작 시간에서 끝나는 시간 바이섹트로 구하기. 몇개인지 구하고 .자신도 구해서 이전꺼 몇개인지..
+# 중복도 허용, 파싱이 관건
+# 무조건 시작 시에 둔다고 끝나는게 아니네.
+# 중간에서 시작해 더 얻어먹을 수도 있다.
 
-def calcu_gap(today, created):
-    Y = 12
-    global M
-    ret = 0
+# 버킷에 담아야하나.. 버킷마져 서칭하는거지
+# 실제 유효한 애들 범위만 정해두는거 2000 x 3000 * lgn 바이섹트
+# 셋에 따로 담을때 현재 위치만 넣고 1000 이후껄 바이섹트
 
-    carry_days = 0
-    if today[2] - created[2] < 0:
-        carry_days = 1
-        today[2] += M
-    ret += today[2] - created[2]
-    
-    carry_month = 0
-    if today[1] - created[1] - carry_days < 0:
-        carry_month = 1
-        today[1] += Y
-    ret += M * (today[1] - created[1] - carry_days)
-    
-    ret += Y * M * (today[0] - created[0] - carry_month)
-    
-    return ret
-    
+from bisect import bisect_left, bisect_right
 
-def solution(today, terms, privacies):    
-    answer = []
-    t_h = dict()
-    for t in terms:
-        in_t = t.split()
-        t_h[in_t[0]] = int(in_t[1])
-    
-    for p in range(1, len(privacies)+1):
-        in_p = privacies[p-1].split()
-        gap = calcu_gap(sepa_units(today), sepa_units(in_p[0]))
-        if gap >= t_h[in_p[1]] * M:
-            answer.append(p)
+def solution(lines):
+    answer = 0
+    for l in lines:
+        l = l.split()[1:]
+        t, s = l[1], l[2]
+        print(t, s)
     return answer
+
+solution([
+"2016-09-15 01:00:04.001 2.0s",
+"2016-09-15 01:00:07.000 2s"
+])

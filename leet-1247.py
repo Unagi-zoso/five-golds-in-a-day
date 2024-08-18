@@ -23,3 +23,28 @@ class Solution:
 # matched case 는 제외하고 unmatched case 만 n_s 에 담았다.
 # 두 개씩 묶어서 해결할 수 있다는게 좀 어려웠네.. 3개로 다루면 뭔가
 # 더 저렴한 경우가 있지 않을까 했는데.. 그렇진 않구나.. 흐
+
+# 똑똑한 선생님의 코드
+
+class Solution:
+    def minimumSwap(self, s1: str, s2: str) -> int:
+        x_y, y_x = 0, 0
+        for c1, c2 in zip(s1, s2):
+            if c1 != c2:
+                if c1 == 'x':
+                    x_y += 1
+                else:
+                    y_x += 1
+        
+        if (x_y + y_x) % 2 != 0: return -1
+
+        ans = x_y // 2
+        ans += y_x // 2
+
+        ans += 2 if x_y % 2 != 0 else 0
+
+        return ans
+        
+# 숫자로만 다루고 난 정렬을 해서 두 개씩 다뤘지만
+# 독립적인 관계의 한 문자열 상의 문자들을 잘 처리했다.
+# 적어도 두 개만 있으면 묶어서 최소처리를 할 수 있다.

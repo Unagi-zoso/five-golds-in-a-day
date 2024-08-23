@@ -37,3 +37,36 @@ class Solution:
         return ("{}/{}".format(c//np, p//np))
 
 
+# 선형성을 강조한 풀이
+
+class Solution:
+    def fractionAddition(self, e: str) -> str:
+        nums = []
+        st = 0
+        idx = 0
+        while idx < len(e) - 1:
+            if e[idx] == '/':
+                nums.append(int(str(e[st: idx])))
+                idx += 1
+                st = idx
+                idx += 1
+                if idx == len(e):
+                    nums.append(int(e[idx - 1]))
+                else:
+                    if e[idx] in ['+', '-']:
+                        nums.append(int(str(e[st: idx])))
+                    else:
+                        idx += 1
+                        nums.append(int(str(e[st: idx])))
+                st = idx
+                continue
+            idx += 1
+        nume = 0
+        deno = 1
+        for i in range(0, len(nums), 2):
+            n, d = nums[i], nums[i + 1]
+            nume = nume * d + deno * n
+            deno *= d
+        
+        g = gcd(nume, deno)
+        return f"{nume // g}/{deno // g}"

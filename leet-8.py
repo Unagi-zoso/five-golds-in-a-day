@@ -73,3 +73,43 @@ class Solution:
         else:
             return sign * int(temp)
             
+class Solution:
+    def myAtoi(self, s: str) -> int:
+        state, sign, result = 1, 1, 0
+
+        i = 0
+        while i < len(s):
+            c = s[i]
+            print(state, c, i)
+            if state == 1:
+                if c == " ":
+                    i += 1
+                    continue
+                elif c == "+":
+                    state = 2
+                elif c == "-":
+                    state = 2
+                    sign = -1
+                elif "0" <= c <= "9":
+                    state = 2
+                    i -= 1
+                else: 
+                    return 0
+            elif state == 2:
+                if "0" <= c <= "9":
+                    result = result * 10 + int(c)
+                else:
+                    print(state, c, i)
+                    break
+            i += 1
+
+        result *= sign
+        if result >= 2**31 - 1:
+            return 2**31 - 1
+        if result <= -(2**31):
+            return -(2**31)
+        return result
+
+
+# 유한상태 오또마따~, 처리과정을 상태로 나눌 수 있다. 이 상태가 유한하다~
+# 본격적으로 숫자를 만나기전 전처리 담당을 상태 1, 이후 숫자를 만나는게 상태 2

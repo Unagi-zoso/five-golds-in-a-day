@@ -1,5 +1,5 @@
 class Solution {
-    public boolean rotateString(String s, String goal) throws Exception {
+    public boolean rotateString(String s, String goal) {
 
         String str = s;
 

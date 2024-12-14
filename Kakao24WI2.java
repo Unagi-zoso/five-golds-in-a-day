@@ -4,11 +4,10 @@ class Solution {
     public int[] solution(int[][] edges) {
         
         int startVertex = -1;
-        {
 
-            int[] ods = new int[1000005];
-            int[] ids = new int[1000005];
-            
+        int[] ods = new int[1000005];
+        int[] ids = new int[1000005];
+        {   
             for (int[] e : edges) {
                 int od = e[0];
                 int id = e[1];
@@ -46,27 +45,14 @@ class Solution {
         
         int[] answer = {startVertex, 0, 0, 0};
         
+        // 각 집합 별 정점의 수와 간선의 수를 저장
         Map<Integer, Info> m = new HashMap<>();
-        // 시작 정점과 이어진 정점을 저장 size 1 의 막대그래프를 구분하기 위한 조건을 검증하기 위함. 
-        LinkedList<Integer> startQueue = new LinkedList<>();
-        Map<Integer, ArrayList<Integer>> path = new HashMap<>();
-        Map<Integer, Boolean> flag2 = new HashMap<>();
-        
         for (int[] e : edges) {
             int od = e[0];
             int id = e[1];
             
-            if (!path.containsKey(od)) path.put(od, new ArrayList<>());
-            path.get(od).add(id);
+            if (od == startVertex) continue;
             
-            if (od != startVertex) {
-                flag2.put(id, true);
-            }
-            
-            if (od == startVertex) {
-                startQueue.offer(id);
-                continue;
-            }
             int root = find(od, unionArr);
             if (!m.containsKey(root)) {
                 m.put(root, new Info());               
@@ -88,12 +74,24 @@ class Solution {
             } else {
                 answer[3]++;
             }
-
         }
-        while (!startQueue.isEmpty()) {
-            int s = startQueue.poll();
-            if (flag2.containsKey(s) && flag2.get(s)) continue;
-            if (!path.containsKey(s)) answer[2]++;
+
+        int[] idsNotFromStart = new int[1000005];
+        for (int i = 0; i < 1000005; i++) {
+            idsNotFromStart[i] = -1;
+        }
+        {   
+            for (int[] e : edges) {
+                int od = e[0];
+                int id = e[1];
+                if (idsNotFromStart[id] == -1) idsNotFromStart[id] = 0;
+                if (od == startVertex) continue;
+                idsNotFromStart[id]++;
+            }
+        }
+
+        for (int i = 0; i < 1000005; i++) {
+            if (ods[i] == 0 && idsNotFromStart[i] == 0) answer[2]++;
         }
         return answer;
     }

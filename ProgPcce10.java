@@ -43,6 +43,4 @@ class Solution {
         
         return answer;
     }
-} {
-    
-}
+} 

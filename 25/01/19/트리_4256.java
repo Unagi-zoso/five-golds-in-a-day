@@ -42,7 +42,7 @@ public class 트리_4256 {
     }
 
     static Node makeTree(int[] preorder, int[] inorder, int[] mapInorderIndex, int st, int lst) {
-        if (lst - st < 0) return null;
+        if (st > lst) return null;
 
         int curValue = preorder[curPreIdx++];
         Node newNode = new Node(curValue);

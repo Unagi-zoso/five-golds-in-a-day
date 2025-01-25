@@ -1,4 +1,5 @@
 import java.io.*;
+import java.math.*;
 
 public class 하노이_탑_1914 {
     static void rec(int from, int to, int val, BufferedWriter bw) throws Exception {
@@ -12,9 +13,9 @@ public class 하노이_탑_1914 {
         rec(nextEmpty, to, val - 1, bw);
     }
 
-    static int onlyCount(int c) {
-        if (1 == c) return 1;
-        return 2 * onlyCount(c - 1) + 1;
+    static BigInteger onlyCount(int c) {
+        if (1 == c) return BigInteger.ONE;
+        return onlyCount(c - 1).multiply(BigInteger.TWO).add(BigInteger.ONE);
     }
     
     public static void main(String[] args) throws Exception {
@@ -26,5 +27,6 @@ public class 하노이_탑_1914 {
             rec(1, 3, n, bw);
         }
         bw.flush();
+        bw.close();
     }
 }

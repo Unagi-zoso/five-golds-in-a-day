@@ -1,27 +1,12 @@
 class Solution {
-    public void traversal(List<Integer> log, TreeNode p) {
-        if (p == null) log.add(-99999999);
-        else {
-            log.add(p.val);
-            traversal(log, p.left);
-            traversal(log, p.right);
-        }
-    }
 
     public boolean isSameTree(TreeNode p, TreeNode q) {
-        List<Integer> aLog = new ArrayList<>();
-        traversal(aLog, p);
-        List<Integer> bLog = new ArrayList<>();
-        traversal(bLog, q);
+        if (p == null && q == null) return true;
 
-        System.out.println(aLog);
-        System.out.println(bLog);
-        if (aLog.size() != bLog.size()) return false;
-        for (int i = 0; i < aLog.size(); i++) {
-            if (!aLog.get(i).equals(bLog.get(i))) {
-                return false;
-            }
+        if (p != null && q != null && q.val == p.val) {
+            return isSameTree(q.left, p.left) && isSameTree(q.right, p.right);
         }
-        return true;
+        
+        return false;
     }
 }

@@ -11,41 +11,59 @@ class Main {
         int m = Integer.parseInt(inputs[0]);
         int n = Integer.parseInt(inputs[1]);
 
-        int[][] spaceFantasy = new int[m][n];
+        int[][][] spaceFantasy = new int[m][n][2];
         for(int i = 0; i < m; i++) {
             inputs = br.readLine().split(" ");
             for (int j = 0; j < inputs.length; j++) {
-                spaceFantasy[i][j] = Integer.parseInt(inputs[j]);
+                spaceFantasy[i][j][0] = Integer.parseInt(inputs[j]);
+                spaceFantasy[i][j][1] = j;
             }
         }
-        int[] ans = {0};
-        comb(0, 0, spaceFantasy, new int[2], ans);
-        bw.write("" + ans[0]);
+
+        for (int i = 0; i < spaceFantasy.length; i++) {
+            Arrays.sort(spaceFantasy[i], new Comparator<int[]>() {
+                @Override
+                public int compare(int[] a, int[] b) {
+                    return a[0] - b[0];
+                }
+            });
+        }
+
+        int[] uniInfo = new int[105];
+        for (int i = 0; i < 105; i++) {
+            uniInfo[i] = i;
+        }
+
+        int ans = 0;
+        for (int i = 0; i < spaceFantasy.length; i++) {
+            int iRoot = unionFind(i, uniInfo);
+            for (int j = i + 1; j < spaceFantasy.length; j++) {
+                int jRoot = unionFind(j, uniInfo);
+                if (iRoot == jRoot) {
+                    ans++; 
+                    continue;
+                }
+                if (isEval(spaceFantasy[i], spaceFantasy[j])) {
+                    uniInfo[iRoot] = jRoot;
+                    ans++;
+                }
+            }
+        }
+
+        bw.write("" + ans);
         bw.flush();
     }
 
-    public static void comb(int cur, int start, int[][] spaceFantasy, int[] result, int[] ans) {
-        if (cur >= 2) {
-            if (isEval(spaceFantasy[result[0]], spaceFantasy[result[1]], ans)) {
-                ans[0]++;
-            }
-            return;
-        }
-        for (int i = start; i < spaceFantasy.length; i++) {
-            result[cur] = i;
-            comb(cur + 1, i + 1, spaceFantasy, result, ans);
-        }
-    }
-
-    public static boolean isEval(int[] a, int[] b, int[] ans) {
+    public static boolean isEval(int[][] a, int[][] b) {
         for (int i = 0; i < a.length; i++) {
-            for (int j = i + 1; j < a.length; j++) {
-                if (a[i] - a[j] < 0 && b[i] - b[j] >= 0) return false;
-                if (a[i] - a[j] == 0 && b[i] - b[j] != 0) return false;
-                if (a[i] - a[j] > 0 && b[i] - b[j] <= 0) return false;
-            }
+            if (a[i][1] != b[i][1]) return false;
         }
         return true;
+    }
+
+    public static int unionFind(int i, int[] uniInfo) {
+        if (uniInfo[i] == i) return i;
+        return unionFind(uniInfo[i], uniInfo);
     }
 }
 /**
@@ -58,4 +76,12 @@ class Main {
  * 3 <= N <= 10,000
  * 
  * 100C2 * 10,000 ^ 2
+ * 
+ * 정렬 시 인덱스 순서가 같아야한다는 조건 같다.
+ * 
+ * 딱봐도 시간초과 그나마 개선해본다면 값으로 정렬 후 기존 인덱스 일치여부 따지기. 10000^2 으로 하나하나 비교하는거보다 훨 나은 방법
+ * 100 * 10000 * lg10000 으로 세팅하면 된다. 이후 비교는 10000 으로 선형 탐색 하지만 우주쌍들이 10000 에 육박해서 여전히 시간초과발생
+ * 유니온 파인드 같은 느낌으로 스킵시켜버릴까. 아하.. 유니온이 될 경우 개선이 되는데 그렇지 않다면 여전히 초과되겠구나..
+ * 
+ * 와 최대 100글자 문자열로 처리하라고..
  */

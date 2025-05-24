@@ -24,60 +24,29 @@ class Main {
             }
         }
 
+        
+        
+        int cY = n;
+        int cX = m;
+        int ansVal = dp[n][m];
         StringBuilder ansStr = new StringBuilder();
-        int target = dp[str2.length()-1][str1.length()-1];
-        int ansVal = target;
-        int cY = str2.length()-1;
-        int cX = str1.length()-1;
-        while (target > 0) {
-            while (true) {
-                while (cY >= 0 && cX >= 0 && dp[cY][cX] == target) {
-                    int nY = cY - 0;
-                    int nX = cX - 1;
-                    
-                    if (nX < 0) break;
-                    if (dp[nY][nX] != target) break;
-                    cX = nX;
-                }
-                while (cY >= 0 && cX >= 0 && dp[cY][cX] == target) {
-                    int nY = cY - 1;
-                    int nX = cX;
-                    
-                    if (nY < 0) break;
-                    if (dp[nY][nX] != target) break;
-                    cY = nY;
-                }
-                if (cY - 1 >= 0 && cX - 1 >= 0 && dp[cY-1][cX] != target && dp[cY][cX-1] != target) {
-                    ansStr.append(str2.charAt(cY));
-                    target--;
-                    cY--;
+        while (cY > 0 && cX > 0) {
+            if (str2.charAt(cY-1) == str1.charAt(cX-1)) {
+                ansStr.append(str2.charAt(cY-1));
+                cX--;
+                cY--;
+            }
+            else {
+                if (dp[cY][cX-1] >= dp[cY-1][cX]) {
                     cX--;
-                    break;
-                } else if (cY == 0 && cX > 0 && dp[cY][cX-1] != target) {
-                    ansStr.append(str2.charAt(cY));
-                    target--;
-                    cX--;
-                    break;
-                } else if (cY > 0 && cX == 0 && dp[cY-1][cX] != target) {
-                    ansStr.append(str2.charAt(cY));
-                    target--;
-                    cY--;
-                    break;
                 } else {
-                    ansStr.append(str2.charAt(cY));
-                    target--;
-                    break;
+                    cY--;
                 }
             }
         }
-        String reversed = ansStr.toString();
-        StringBuilder corAnsStr = new StringBuilder();
-
-        for (int i = reversed.length()-1; i >= 0; i--) {
-            corAnsStr.append(reversed.charAt(i));
-        }
+        
         bw.write(String.valueOf(ansVal) + "\n");
-        if (ansVal != 0) bw.write(corAnsStr.toString());
+        if (ansVal != 0) bw.write(ansStr.reverse().toString());
         bw.flush();
     }
 }

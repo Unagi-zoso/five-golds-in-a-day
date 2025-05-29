@@ -7,60 +7,46 @@ class Main {
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
         int MX = 100000;
-        int[] dp = new int[MX + 5];
-        String[] inputs = br.readLine().split(" ");
-        int n = Integer.parseInt(inputs[0]);
-        int root = Integer.parseInt(inputs[1]);
-        int cntQ = Integer.parseInt(inputs[2]);
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int n = Integer.parseInt(st.nextToken());
+        int root = Integer.parseInt(st.nextToken());
+        int cntQ = Integer.parseInt(st.nextToken());
 
-        List<Set<Integer>> adjc = new ArrayList<>();
+        List<List<Integer>> tree = new ArrayList<>();
         for (int i = 0; i <= n; i++) {
-            adjc.add(new HashSet<>());
+            tree.add(new ArrayList<>());
         }
 
         for (int i = 0; i < n - 1; i++) {
-            inputs = br.readLine().split(" ");
-            int one = Integer.parseInt(inputs[0]);
-            int two = Integer.parseInt(inputs[1]);
-            adjc.get(one).add(two);
-            adjc.get(two).add(one);
+            st = new StringTokenizer(br.readLine());
+            int u = Integer.parseInt(st.nextToken());
+            int v = Integer.parseInt(st.nextToken());
+            tree.get(u).add(v);
+            tree.get(v).add(u);
         }
 
-        Queue<Integer> q = new LinkedList<>();
-        q.add(root);
-        while(!q.isEmpty()) {
-            int cur = q.poll();
-            for (Integer next : adjc.get(cur)) {
-                adjc.get(next).remove(cur);
-                q.add(next);
-            }
-        }
-        
-        rec(dp, adjc, root);
+        int[] dp = new int[MX + 5];
+        boolean[] isVisited = new boolean[MX + 5];
+        isVisited[root] = true;
+        rec(dp, isVisited, tree, root);
 
         for (int i = 0; i < cntQ; i++) {
-            int cur = Integer.parseInt(br.readLine());
+            st = new StringTokenizer(br.readLine());
+            int cur = Integer.parseInt(st.nextToken());
             bw.write(String.valueOf(dp[cur] + "\n"));
         }
         bw.flush();
     }
 
-    public static int rec(int[] dp, List<Set<Integer>> adjc, int cur) {
-        if (adjc.get(cur).size() == 0) {
-            dp[cur] = 1;
-            return dp[cur];
-        }
+    public static int rec(int[] dp, boolean[] isVisited, List<List<Integer>> adjc, int cur) {
         if (dp[cur] != 0) return dp[cur];
         int sum = 1;
         for (Integer next : adjc.get(cur)) {
-            sum += rec(dp, adjc, next);
+            if (isVisited[next]) continue;
+            isVisited[next] = true;
+            sum += rec(dp, isVisited, adjc, next);
         }
         dp[cur] = sum;
         return dp[cur];
     }
 }
-
-/*
- * 가중치도 방향성도 없는 트리가 있다한다. 임의 루트가 있다는데 내가 정하란건가.
- * 
- */

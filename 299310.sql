@@ -1,7 +1,5 @@
-select year(e1.DIFFERENTIATION_DATE) as YEAR, 
-    (select max(e2.SIZE_OF_COLONY)
-    from ECOLI_DATA e2 
-    where year(e2.DIFFERENTIATION_DATE) = year(e1.DIFFERENTIATION_DATE)) - e1.SIZE_OF_COLONY as YEAR_DEV, 
-    ID 
-from ECOLI_DATA e1 
+select year(DIFFERENTIATION_DATE) as YEAR, 
+    max(SIZE_OF_COLONY) over (partition by year(DIFFERENTIATION_DATE)) - SIZE_OF_COLONY as YEAR_DEV,
+    ID
+from ECOLI_DATA 
 order by YEAR, YEAR_DEV;

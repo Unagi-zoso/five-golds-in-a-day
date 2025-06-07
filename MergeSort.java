@@ -2,43 +2,39 @@ import java.util.*;
 
 public class MergeSort {
     public static void main(String[] args) {
-        int[] arr = new Random().ints(100, 0, 1_000_000).toArray();
-
-        sort(arr, 0, arr.length);
+        int[] arr = new Random().ints(10, 0, 1_000).toArray();
         System.out.println(Arrays.toString(arr));
+        
+        int[] sorted = sort(arr, 0, arr.length);
+        System.out.println(Arrays.toString(sorted));
     }
 
-    public static void sort(int[] arr, int st, int ed) {
+    public static int[] sort(int[] arr, int st, int ed) {
         if (st + 1 == ed) {
-            return;
+            int[] newArr = {arr[st]};
+            return newArr;
         }
         int mid = st + (ed - st) / 2;
-        sort(arr, st, mid);
-        sort(arr, mid, ed);
-        int i = 0;
-        int j = 0;
-        int idx = 0;
-        int[] sorted = new int[arr.length];
-        while (st + i < mid && mid + j < ed) {
-            if (arr[st + i] <= arr[mid + j]) {
-                sorted[idx++] = arr[st + i];
-                i++;
+        int[] lhs = sort(arr, st, mid);
+        int[] rhs = sort(arr, mid, ed);
+
+        int lIdx = 0;
+        int rIdx = 0;
+        int sIdx = 0;
+        int[] sorted = new int[lhs.length + rhs.length];
+        while (lIdx < lhs.length && rIdx < rhs.length) {
+            if (lhs[lIdx] <= rhs[rIdx]) {
+                sorted[sIdx++] = lhs[lIdx++];
             } else {
-                sorted[idx++] = arr[mid + j];
-                j++;
+                sorted[sIdx++] = rhs[rIdx++];
             }
         }
-        while (st + i < mid) {
-            sorted[idx++] = arr[st + i];
-            i++;
+        while (lIdx < lhs.length) {
+            sorted[sIdx++] = lhs[lIdx++];
         }
-        while (mid + j < ed) {
-            sorted[idx++] = arr[mid + j];
-            j++;
+        while (rIdx < rhs.length) {
+            sorted[sIdx++] = rhs[rIdx++];
         }
-
-        for (int s = st; s < ed; s++) {
-            arr[s] = sorted[s - st];
-        }
+        return sorted;
     }
 }

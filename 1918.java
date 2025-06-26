@@ -7,7 +7,6 @@ class Main {
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
         char[] input = br.readLine().toCharArray();
-        // StringBuilder sb = new StringBuilder();
         List<String> inputStr = new ArrayList<>();
         for (char c : input) {
             inputStr.add(String.valueOf(c));
@@ -38,29 +37,26 @@ class Main {
 
     public static String compute(List<String> statement) {
         if (statement.size() == 1) return statement.get(0);
-        Stack<String> operatorStk = new Stack<>();
-        Stack<String> operandStk = new Stack<>();
+        Stack<String> expressStk = new Stack<>();
 
         for (int i = 0; i < statement.size(); i++) {
             String s = statement.get(i);
             if (s.equals("/") || s.equals("*")) {
-                String lhs = operatorStk.pop();
+                String lhs = expressStk.pop();
                 String rhs = statement.get(++i);
-                operatorStk.push(lhs + rhs + s);
+                expressStk.push(lhs + rhs + s);
             } else if (s.equals("+") || s.equals("-")) {
-                operandStk.push(s);
+                expressStk.push(s);
             } else {
-                operatorStk.push(s);
+                expressStk.push(s);
             }
         }
-        Collections.reverse(operatorStk);
-        Collections.reverse(operandStk);
 
         StringBuilder sb = new StringBuilder();
-        sb.append(operatorStk.pop());
-        while (!operandStk.isEmpty()) {
-            sb.append(operatorStk.pop());
-            sb.append(operandStk.pop());
+        sb.append(expressStk.get(0));
+        for (int i = 1; i < expressStk.size(); i += 2) {
+            sb.append(expressStk.get(i+1));
+            sb.append(expressStk.get(i));
         }
         return sb.toString();
     }

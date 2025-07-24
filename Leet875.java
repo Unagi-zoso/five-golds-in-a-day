@@ -19,3 +19,8 @@ class Solution {
         return low;
     }
 }
+
+// piles 범위는 h 기준을 초과한다해도 bs 과정 중에서 검증 가능 따라서 최대값 그냥 사용하면 된다.
+// mid 는 divide 로 적용된다.
+// 배열 접근 아닌 원소직접접근이라 닫힌 범위
+// ceil 을 수학적으로 처리한 것도 재밌 (target + div -1) / div

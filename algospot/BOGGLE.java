@@ -1,5 +1,4 @@
 import java.io.*;
-import java.util.*;
 
 class BOGGLE {
     public static int[][] dir = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
@@ -26,34 +25,38 @@ class BOGGLE {
     }
 
     public static boolean solve(char[][] board, String target) {
-        Map<String, Boolean> dp = new HashMap<>();
+        int[][][] dp = new int[board.length][board[0].length][target.length()];
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[0].length; j++) {
-                if (board[i][j] == target.charAt(0)) {
-                    if (rec(board, dp, target, i, j)) return true;
-                }
+                if (rec(board, dp, target, 0, i, j)) return true;
             }
         }
         return false;
     }
 
-    public static boolean rec(char[][] board, Map<String, Boolean> dp, String target, int y, int x) {
-        if (target.charAt(0) != board[y][x]) return false;
-        String dpKey = y + " " + x + " " + target;
-        if (target.length() == 1) {
-            dp.put(dpKey, true);
+    public static boolean rec(char[][] board, int[][][] dp, String target, int tIdx, int y, int x) {
+        if (y < 0 || y >= board.length || x < 0 || x >= board[0].length) return false;
+        
+        if (target.charAt(tIdx) != board[y][x]) {
+            dp[y][x][tIdx] = 1;
+            return false;
+        }
+        
+        if (target.length() - 1 == tIdx) {
+            dp[y][x][tIdx] = 2;
             return true;
         }
-        if (dp.containsKey(dpKey)) return dp.get(dpKey);
-        dp.put(dpKey, false);
+
+        if (dp[y][x][tIdx] != 0) return dp[y][x][tIdx] == 2;
+
         for (int[] nd : dir) {
             int ny = y + nd[0], nx = x + nd[1];
-            if (ny < 0 || ny >= board.length || nx < 0 || nx >= board[0].length) continue;
-            if (board[ny][nx] == target.charAt(1) && rec(board, dp, target.substring(1), ny, nx)) {
-                dp.put(dpKey, true);
+            if (rec(board, dp, target, tIdx + 1, ny, nx)) {
+                dp[y][x][tIdx] = 2;
                 return true;
             }
         }
+        dp[y][x][tIdx] = 1;
         return false;
     }
 }

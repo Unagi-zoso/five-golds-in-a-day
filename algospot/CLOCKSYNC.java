@@ -31,10 +31,9 @@ class Main {
             else return Integer.MAX_VALUE;
         }
         int ret = Integer.MAX_VALUE;
-        for (int i = 0; i < 4; i++) {
-            if (i != 0) press(clockStatus, 1, depth, i);
-            ret = Math.min(ret, rec(clockStatus, depth+1, cntPress + (i == 0 ? 0 : i)));
-            if (i != 0) press(clockStatus, -1, depth, i);
+        for (int i = 1; i <= 4; i++) {
+            press(clockStatus, depth);
+            ret = Math.min(ret, rec(clockStatus, depth+1, cntPress + (i % 4)));
         }
         
         return ret;
@@ -46,10 +45,10 @@ class Main {
         return true;
     }
 
-    public static void press(int[] clockStatus, int dir, int depth, int rotateCnt) {
+    public static void press(int[] clockStatus, int depth) {
         for (int clockId : btnMap[depth]) {
             clockStatus[clockId]--;
-            clockStatus[clockId] = (12 + clockStatus[clockId] + (dir * (3 * rotateCnt))) % 12;
+            clockStatus[clockId] = (clockStatus[clockId] + 3) % 12;
             clockStatus[clockId]++;
         }
     }

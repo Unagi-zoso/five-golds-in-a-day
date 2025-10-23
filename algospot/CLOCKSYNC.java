@@ -26,7 +26,7 @@ class Main {
     }
 
     public static int rec(int[] clockStatus, int depth, int cntPress) {
-        if (depth == 9) {
+        if (depth == 10) {
             if (check(clockStatus)) return cntPress;
             else return Integer.MAX_VALUE;
         }

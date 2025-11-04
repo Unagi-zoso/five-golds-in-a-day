@@ -1,53 +1,60 @@
 class Solution {
     public int[] findXSum(int[] nums, int k, int x) {
-        int[] ret = new int[nums.length-k+1];
-        int[] freqCnt = new int[55];
-        int[] numCnt = new int[55];
+        TreeMap<Integer, TreeSet<Integer>> numFreqOrder = new TreeMap<>();
+        Map<Integer, Integer> numFreq = new HashMap<>();
+
         for (int i = 0; i < k; i++) {
-            int num = nums[i];
-            numCnt[num]++;
+            int curFreq = numFreq.getOrDefault(nums[i], 0);
+            numFreq.put(nums[i], curFreq + 1);
+            if (numFreqOrder.containsKey(curFreq)) numFreqOrder.get(curFreq).remove(nums[i]);
+            numFreqOrder.computeIfAbsent(curFreq + 1, (_k) -> new TreeSet(Comparator.reverseOrder())).add(nums[i]);
+        }
+
+        List<Integer> result = new ArrayList<>();
+        result.add(0);
+        Map.Entry<Integer, TreeSet<Integer>> lE = numFreqOrder.lastEntry();
+        for (int i = 0; i < x;) {
+            TreeSet<Integer> tS = lE.getValue();
+            Iterator<Integer> it = tS.iterator();
+            while(i < x && it.hasNext()) {
+                result.set(result.size()-1, result.get(result.size()-1) + lE.getKey() * it.next());
+                i++;
+            }
+            lE = numFreqOrder.lowerEntry(lE.getKey());
+            if (lE == null) break;
+            tS = lE.getValue();
         }
         
-        int maxFreq = 0;
-        for (int i = 0; i < numCnt.length; i++) {
-            maxFreq = Math.max(maxFreq, numCnt[i]);
-        }
-
-        int cnt = 0;
-        while (cnt < x) {
-            for (int i = numCnt.length - 1; i >= 0 && cnt < x; i--) {
-                if (numCnt[i] == maxFreq) {
-                    cnt++;
-                    ret[0] += maxFreq * i;
-                }
-            }
-            maxFreq--;
-        }
-
         for (int i = k; i < nums.length; i++) {
-            int num = nums[i];
-            numCnt[num]++;
-
+            int curFreq = numFreq.getOrDefault(nums[i], 0);
+            numFreq.put(nums[i], curFreq + 1);
+            if (numFreqOrder.containsKey(curFreq)) numFreqOrder.get(curFreq).remove(nums[i]);
+            numFreqOrder.computeIfAbsent(curFreq + 1, (_k) -> new TreeSet(Comparator.reverseOrder())).add(nums[i]);
             int removeNum = nums[i-k];
-            numCnt[removeNum]--;
+            int rCurFreq = numFreq.getOrDefault(removeNum, 0);
+            numFreq.put(removeNum, rCurFreq-1);
 
-            maxFreq = 0;
-            for (int j = 0; j < numCnt.length; j++) {
-                maxFreq = Math.max(maxFreq, numCnt[j]);
+            numFreqOrder.get(rCurFreq).remove(removeNum);
+            if (numFreqOrder.get(rCurFreq).isEmpty()) numFreqOrder.remove(rCurFreq);
+            if (rCurFreq-1 != 0) {
+                numFreqOrder.computeIfAbsent(rCurFreq-1, (_k) -> new TreeSet(Comparator.reverseOrder())).add(removeNum);
             }
 
-            cnt = 0;
-            while (cnt < x) {
-                for (int j = numCnt.length - 1; j >= 0 && cnt < x; j--) {
-                    if (numCnt[j] == maxFreq) {
-                        cnt++;
-                        ret[i-k+1] += maxFreq * j;
-                    }
+            result.add(0);
+            lE = numFreqOrder.lastEntry();
+            for (int j = 0; j < x;) {
+                TreeSet<Integer> tS = lE.getValue();
+                Iterator<Integer> it = tS.iterator();
+                while(j < x && it.hasNext()) {
+                    result.set(result.size()-1, result.get(result.size()-1) + lE.getKey() * it.next());
+                    j++;
                 }
-                maxFreq--;
+                lE = numFreqOrder.lowerEntry(lE.getKey());
+                if (lE == null) break;
+                tS = lE.getValue();
             }
         }
 
-        return ret;
+        return result.stream().mapToInt(Integer::intValue).toArray();
     }
 }

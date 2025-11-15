@@ -1,11 +1,16 @@
 class Solution {
     public int removeDuplicates(int[] nums) {
-        int[] freq = new int[500000];
+        int prevFreq = 1;
+        int prev = nums[0];
         int idxToIndex = 1;
-        freq[nums[0]+20000]++;
         for (int i = 1; i < nums.length; i++) {
-            if (freq[nums[i]+20000] >= 2 && nums[i-1] == nums[i]) continue;
-            freq[nums[i]+20000]++;
+            if (prevFreq >= 2 && nums[i-1] == nums[i]) continue;
+            if (prev == nums[i]) {
+                prevFreq++;
+            } else {
+                prevFreq = 1;
+                prev = nums[i];
+            }
             nums[idxToIndex++] = nums[i];
         }
         return idxToIndex;
